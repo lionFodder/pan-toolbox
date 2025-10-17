@@ -49,15 +49,15 @@ def setup_conn(fw_ip, username, password):
     :param password: Password used to log into the firewall.
     :return:  Returns the connection handler for use in other functions.
     '''
-    print fw_ip, username, password
+    print(fw_ip, username, password)
     test_conn = paramiko.SSHClient()
     test_conn.load_system_host_keys()
     test_conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        print 'Connecting to firewall'
+        print('Connecting to firewall')
         test_conn.connect(fw_ip, username=username, password=password)
     except:
-        print 'Unable to connect to firewall, please check your settings'
+        print('Unable to connect to firewall, please check your settings')
         sys.exit(1)
 
     return test_conn  # Paramiko SSH Handler
@@ -88,7 +88,7 @@ def execute_remote_command(ssh_con, cmds, cmd_args):
             if cmd[-1] != '\n':
                 cmd += '\n'
             if cmd_args.debug:
-                print 'Sending "%s" to remote firewall' % cmd
+                print('Sending "%s" to remote firewall' % cmd)
             ssh_shell.send(cmd)
             prompt_search = ''
             results_data = ''
@@ -98,9 +98,9 @@ def execute_remote_command(ssh_con, cmds, cmd_args):
             if cmd_args.file:
                 cmd_out.write(results_data)
             if cmd_args.stdout:
-                print results_data
+                print(results_data)
     if cmd_args.debug:
-        print 'All commands executed'
+        print('All commands executed')
 
 def main():
     cmd_parser, cmd_args = parse_args()
@@ -114,12 +114,12 @@ def main():
     else:
         cmds = [ cmd_args.cmd ]
     if cmd_args.debug:
-        print 'Setting up SSH connection'
+        print('Setting up SSH connection')
     cmd_handler = setup_conn(cmd_args.firewall, cmd_args.user, cmd_args.password)
     if cmd_args.debug:
-        print 'Successfully set up SSH connection and received connection handler back'
+        print('Successfully set up SSH connection and received connection handler back')
 
-    execute_report_command(cmd_handler, cmds, cmd_args)
+    execute_remote_command(cmd_handler, cmds, cmd_args)
 
 
 if __name__ == '__main__':
